@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+}
+h1 {
+  text-align: center;
+}
+
+button {
+  width: 80px;
+  height: 60px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  transition: 600ms;
+  background-color: #95ca3e;
+  color: white;
+}
+
+button:active {
+  transform: scale(.8);
+}
+
+.container {
+  display: flex;
+  height: auto;
+  justify-content: center;
+  align-items: space-around;
+  border: 1px solid yellow;
+}
+
+.textArea {
+  height: 300px;
+  width: 400px;
+  resize: none;
+  outline: none;
+  font-size: 1.5em;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.display_errors {
+  width: 400px;
+  height: 200px;
+  border: 1px solid brown;
+}
+
+.area {
+  border: 1px solid blue;
+}

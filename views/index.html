@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Compiler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Javascript Compiler</h1>
+  <div class="container">
+      <button onclick="new Tokens().getText()">Interpretar</button>
+    <div class="content">
+      <textarea name="" id="tokens" class="textArea"></textarea>
+      <div class="display_errors">
+        <p>Debugear errores del compilador</p>
+      </div>
+    </div>
+    <div class="result">
+      <canvas class="area" width="400" height="500" id="area_de_dibujo"></canvas>
+    </div>
+  </div>
+  <script src="../index.js"></script>
+</body>
+</html>
