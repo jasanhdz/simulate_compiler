@@ -43,6 +43,7 @@ button:active {
   width: 400px;
   height: 200px;
   border: 1px solid brown;
+  overflow: scroll;
 }
 
 .area {
