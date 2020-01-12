@@ -4,12 +4,16 @@ class Tokens {
     this.canvas = document.getElementById('area_de_dibujo');
     this.lienzo = this.canvas.getContext('2d');
     this.text = document.getElementById('tokens').value;
+    this.tokens = [];
     this.arrayMessages = [];
     this.reservTokens = {
       Programa: "Programa",
       Inicio: "Inicio",
       Fin: "Fin",
-      DibujarCirculo: "DibujarCirculo",
+      DibujarCirculo: (x, y) => {
+        this.name = "DibujarCirculo";
+        alert(`Exacto ${x} ${y}`);
+      },
       DibujarRectangulo: "DibujarRectangulo",
       DibujarTriangulo: "DibujarTriangulo",
       EliminarFigura: "EliminarFigura",
@@ -36,45 +40,126 @@ class Tokens {
     }
   }
 
-  getText() {
-    this.tokens = this.text.split(" ");
-    const arrayKeyWords = [];
-    this.tokens.forEach(keyword => {
-      if (!arrayKeyWords.includes(keyword)) {
-        arrayKeyWords.push(keyword);
-        return this.reservedWords(keyword);
-      } else {
-        return this.addTemplate("Las palabras no pueden repetirse");
-      }
+  createTokens() {
+    let words = this.text.split(/\.*(\(|\)|\d*\.*[\d]|\d|\s)/);
+    words = words.filter(element => element !== "" && element !== "\n");
+    words.forEach(element => {
+      // let vdd = element.prototype.match(/\d*\.*[\d]|\d/);
+      // console.log(vdd);
+      this.tokens.push(
+        this.verifyToken(element)
+      );
     });
-    console.log(this.tokens.indexOf(this.reservTokens.Programa));
-    console.log(this.text);
-    this.addTemplate(this.text);
-    this.addTemplate("Palabras reservadas: ");
-    this.addTemplate(JSON.stringify(this.reservTokens));
-    console.log(this.reservTokens)
-    this.drawLine();
+    console.log(this.tokens);
   }
 
-  reservedWords(word) {
-    switch (word) {
+  verifyToken(token) {
+    let isNumber = !isNaN(token);
+    if (isNumber) {
+      let isFloat = token.includes('.');
+      if (isFloat) {
+        token = parseFloat(token);
+        console.log(token);
+      } else {
+        token = parseInt(token);
+        console.log(token);
+      }
+    }
+    switch (token) {
       case this.reservTokens.Programa: {
-        alert("La palabra Programa está contendia");
+        return {
+          type: "keyword",
+          value: this.reservTokens.Programa,
+          description: "Definicion del programa"
+        }
       }
       case this.reservTokens.Inicio: {
-        
-      } 
-      case this.reservTokens.Fin: {}
-      case this.reservTokens.DibujarCirculo: {} 
-      case this.reservTokens.DibujarRectangulo: {}
-      case this.reservTokens.DibujarTriangulo: {}
-      case this.reservTokens.EliminarFigura: {}
-      case this.reservTokens.Dormir: {}
-      case this.reservTokens.ROJO: {}
-      case this.reservTokens.AZUL: {}
-      case this.reservTokens.AMARILLO: {}
-      case this.reservTokens.Constante: { }
-      default: console.log("Sin palabras reservadas :(");
+        return {
+          type: "keyword",
+          value: this.reservTokens.Inicio,
+          description: "Punto de entrada del programa"
+        }
+      }
+      case this.reservTokens.Fin: {
+        return {
+          type: "keyword",
+          value: this.reservTokens.Fin,
+          description: "Termina de ejecutar el programa"
+        }
+      }
+      case this.reservTokens.DibujarCirculo.name: {
+        this.reservTokens.DibujarCirculo(56, 12);
+        return {
+          type: "function",
+          value: this.reservTokens.DibujarCirculo,
+          description: "Dibuja un circulo"
+        }
+      }
+      case this.reservTokens.DibujarRectangulo: {
+        return {
+          type: "function",
+          value: this.reservTokens.DibujarRectangulo,
+          description: "Dibuja un rectangulo"
+        }
+      }
+      case this.reservTokens.DibujarTriangulo: {
+        return {
+          type: "function",
+          value: this.reservTokens.DibujarTriangulo
+        }
+      }
+      case this.reservTokens.EliminarFigura: {
+        return {
+          type: "function",
+          value: this.reservTokens.EliminarFigura
+        } 
+      }
+      case this.reservTokens.Dormir: {
+        return {
+          type: "function",
+          value: this.reservTokens.Dormir
+        } 
+      }
+      case this.reservTokens.ROJO: {
+        return {
+          type: "function",
+          value: this.reservTokens.ROJO
+        } 
+      }
+      case this.reservTokens.AZUL: {
+        return {
+          type: "function",
+          value: this.reservTokens.AZUL
+        } 
+      }
+      case this.reservTokens.AMARILLO: {
+        return {
+          type: "function",
+          value: this.reservTokens.AMARILLO
+        } 
+      }
+      case "(": 
+        return {type: "Punctuator", value: token}
+      case ")": 
+        return {type: "Punctuator", value: token}
+      case ".": 
+        return {type: "Punctuator", value: token}
+      case ",": 
+        return {type: "Punctuator", value: token}
+      default:
+        // console.log(token);
+        if (typeof token === 'number', token) {
+          let isInteger = parseFloat(token);
+          return {
+            type: Number.isInteger(isInteger) ? "Number int" : "Decimal number",
+            value: token,
+          }
+        } else {
+            return {
+              type: "Identifier",
+              value: token
+            }
+        }
     }
   }
 

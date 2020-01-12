@@ -10,7 +10,8 @@
 <body>
   <h1>Javascript Compiler</h1>
   <div class="container">
-      <button onclick="new Tokens().getText()">Interpretar</button>
+      <button onclick="new Tokens().createTokens()">Interpretar</button>
+      <!-- <button onclick="getTokens();">Interpretar</button> -->
     <div class="content">
       <textarea name="" id="tokens" class="textArea"></textarea>
       <div class="display_errors" id="debugger">
@@ -22,5 +23,6 @@
     </div>
   </div>
   <script src="../index.js"></script>
+  <!-- <script src="../getTokens.js"></script> -->
 </body>
 </html>
