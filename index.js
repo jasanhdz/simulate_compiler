@@ -10,10 +10,7 @@ class Tokens {
       Programa: "Programa",
       Inicio: "Inicio",
       Fin: "Fin",
-      DibujarCirculo: (x, y) => {
-        this.name = "DibujarCirculo";
-        alert(`Exacto ${x} ${y}`);
-      },
+      DibujarCirculo: "DibujarCirculo",
       DibujarRectangulo: "DibujarRectangulo",
       DibujarTriangulo: "DibujarTriangulo",
       EliminarFigura: "EliminarFigura",
@@ -41,16 +38,17 @@ class Tokens {
   }
 
   createTokens() {
-    let words = this.text.split(/\.*(\(|\)|\d*\.*[\d]|\d|\s)/);
-    words = words.filter(element => element !== "" && element !== "\n");
-    words.forEach(element => {
-      // let vdd = element.prototype.match(/\d*\.*[\d]|\d/);
-      // console.log(vdd);
+    this.words = this.text.split(/\.*(\(|\)|\d*\.*[\d]|\d|\s|\;)/);
+    this.words = this.words.filter(element => element !== "" && element !== "\n" && element !== " ");
+    // words = words.map(element => element.replace(/.*[\n]/, ";"))
+    // console.log(words);
+    this.words.forEach(element => {
       this.tokens.push(
         this.verifyToken(element)
       );
     });
     console.log(this.tokens);
+    this.buildNameProgram();
   }
 
   verifyToken(token) {
@@ -148,7 +146,7 @@ class Tokens {
         return {type: "Punctuator", value: token}
       default:
         // console.log(token);
-        if (typeof token === 'number', token) {
+        if (typeof token === 'number' && token !== " ") {
           let isInteger = parseFloat(token);
           return {
             type: Number.isInteger(isInteger) ? "Number int" : "Decimal number",
@@ -161,6 +159,63 @@ class Tokens {
             }
         }
     }
+  }
+
+  tokenLogic() {
+  }
+
+  buildNameProgram() {
+    let postion = this.words.indexOf('Programa');
+    let name = this.words[postion + 1];
+    let message = `${this.words[postion]} ${name}`;
+    console.log(message);
+    this.buildInitProgram();
+  }
+
+  buildInitProgram() {
+    const start = this.words.indexOf(this.reservTokens.Inicio);
+    console.log(start, "aui");
+    if (start) {
+      const indexesDrawCircle = this.getAllIndexes(this.words, this.reservTokens.DibujarCirculo);
+      const indexesDrawTriangulo = this.getAllIndexes(this.words, this.reservTokens.DibujarTriangulo);
+      const indexesDrawRectangulo = this.getAllIndexes(this.words, this.reservTokens.DibujarRectangulo);
+
+      console.log(indexesDrawCircle);
+      console.log(this.words);
+      this.runIndexes(indexesDrawCircle, this.reservTokens.DibujarCirculo);
+    } else {
+
+    }
+  }
+
+  runIndexes(arrIndexes = [], keyword) {
+    arrIndexes.forEach(key => {
+      this.getCompared(key, keyword);
+    })
+  }
+
+  getCompared(postion, keyword) {
+    debugger;
+    switch (keyword) {
+      case this.reservTokens.DibujarCirculo: {
+        debugger;
+        this.drawFigure(postion + 1, postion + 2);
+      }
+    }
+  }
+
+  drawFigure(x, y, color) {
+    this.drawLine();
+  }
+
+  getAllIndexes(arr, val) {
+    debugger;
+    let indexes = [], i = -1;
+    while ((i = arr.indexOf(val, i+1)) != -1) {
+      indexes.push(i);
+      debugger;
+    }
+    return indexes;
   }
 
   drawLine() {

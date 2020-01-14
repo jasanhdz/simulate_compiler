@@ -12,3 +12,4 @@ function verify(element) {
     default: return console.log("Falso");    
   }
 }
+
