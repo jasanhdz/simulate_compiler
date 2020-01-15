@@ -46,6 +46,10 @@ button:active {
   overflow: scroll;
 }
 
+.display_errors > p {
+  color: red;
+}
+
 .area {
   border: 1px solid blue;
 }

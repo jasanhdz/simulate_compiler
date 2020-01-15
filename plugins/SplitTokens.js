@@ -8,17 +8,30 @@ function SplitTokens(config) {
 }
 
 SplitTokens.prototype.createTokens = function (str) {
-  let obj = [];
+  let obj = [], obj2 = [];
   this.tokens = str.value.split(/\.*(\(|\)|\d*\.*[\d]|\d|\s|\;)/);
   this.tokens = this.tokens.filter(
     element => element !== "" && element !== "\n" && element !== " "
   );
   this.tokens.forEach(element => {
     obj.push(this.verifyToken(element))
+    obj2.push(this.verifyNumber(element))
   });
   this.tokenObject = obj;
+  this.tokens = obj2;
+  
   // aqui debemos pasarle los tokens al Interpret
   this.interpret.getTokens(this.tokenObject, this.tokens)
+}
+
+SplitTokens.prototype.verifyNumber = function (token) {
+  let isNumber = !isNaN(token);
+  if (isNumber) {
+    token.includes(".")
+      ? (token = parseFloat(token))
+      : (token = parseInt(token));
+  }
+  return token;
 }
 
 SplitTokens.prototype.verifyToken = function(token) {
