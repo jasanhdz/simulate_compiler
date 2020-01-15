@@ -2,10 +2,7 @@ export let keyWords = {
   Programa: "Programa",
   Inicio: "Inicio",
   Fin: "Fin",
-  DibujarCirculo: (x, y) => {
-    this.name = "DibujarCirculo";
-    alert(`Exacto ${x} ${y}`);
-  },
+  DibujarCirculo: "DibujarCirculo",
   DibujarRectangulo: "DibujarRectangulo",
   DibujarTriangulo: "DibujarTriangulo",
   EliminarFigura: "EliminarFigura",
