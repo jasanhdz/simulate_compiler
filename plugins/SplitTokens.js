@@ -9,7 +9,7 @@ function SplitTokens(config) {
 
 SplitTokens.prototype.createTokens = function (str) {
   let obj = [], obj2 = [];
-  this.tokens = str.value.split(/\.*(\(|\)|\d*\.*[\d]|\d|\s|\;)/);
+  this.tokens = str.value.split(/\.*(\(|\)|\s|\;)/);
   this.tokens = this.tokens.filter(
     element => element !== "" && element !== "\n" && element !== " "
   );
@@ -19,7 +19,7 @@ SplitTokens.prototype.createTokens = function (str) {
   });
   this.tokenObject = obj;
   this.tokens = obj2;
-  
+  console.log(this.tokens);
   // aqui debemos pasarle los tokens al Interpret
   this.interpret.getTokens(this.tokenObject, this.tokens)
 }

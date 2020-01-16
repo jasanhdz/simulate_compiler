@@ -4,12 +4,12 @@ function Interpret(object) {
   this.debuger = object.debuger;
   this.arrayMessages = [];
   this.keyWords = { ...keyWords };
-  this.constantes = [];
 }
 
 Interpret.prototype.getTokens = function (objectTokens, tokens) {
   this.objectTokens = objectTokens;
   this.tokens = tokens;
+  this.constantes = [];
   this.buildNameProgram();
 }
 
@@ -26,7 +26,18 @@ Interpret.prototype.addTemplate = function (message) {
   }
 }
 
-Interpret.prototype.tokenLogic = function () { }
+Interpret.prototype.verifyConstantes = function () { 
+  const indexesConstante = this.getAllIndexes(this.tokens, this.keyWords.Constante);
+  this.runIndexes(indexesConstante, this.keyWords.Constante);
+  if (this.constantes.length > 0) {
+    this.addTemplate(`constantes: ${JSON.stringify(this.constantes)}`)
+    this.buildInitProgram();
+  }
+  else {
+    this.addTemplate("Deberías definir primero las constantes");
+    console.log(this.constantes.length);
+  }
+}
 
 Interpret.prototype.buildNameProgram = function () { 
   this.debuger.innerHTML = '';
@@ -38,14 +49,7 @@ Interpret.prototype.buildNameProgram = function () {
       let name = this.tokens[position + 1];
       if (name !== undefined) {
         this.addTemplate(`${this.tokens[position]} ${name}`);
-        const indexesConstante = this.getAllIndexes(this.tokens, this.keyWords.Constante);
-        this.runIndexes(indexesConstante, this.keyWords.Constante);
-        if (this.constantes.length > 0) {
-          this.addTemplate(`constantes: ${JSON.stringify(this.constantes)}`)
-          this.buildInitProgram();
-        }
-        else this.addTemplate("Deberías definir primero las constantes");
-        console.log(this.constantes.length);
+        this.verifyConstantes();
       }
       else {
         this.addTemplate(`El programa debe estar definido`);
@@ -60,9 +64,9 @@ Interpret.prototype.buildNameProgram = function () {
 }
 
 Interpret.prototype.buildInitProgram = function () { 
-  const start = this.tokens.indexOf(this.keyWords.Inicio);
-  // console.log(start, "aui");
-  if (start) {
+  this.debuger.innerHTML = '';
+  const indexesStart = this.getAllIndexes(this.tokens, this.keyWords.Inicio);
+  if (indexesStart.length === 1) {
     const indexesDrawCircle = this.getAllIndexes(this.tokens, this.keyWords.DibujarCirculo);
     const indexesDrawTriangulo = this.getAllIndexes(this.tokens, this.keyWords.DibujarTriangulo);
     const indexesDrawRectangulo = this.getAllIndexes(this.tokens, this.keyWords.DibujarRectangulo);
@@ -71,8 +75,12 @@ Interpret.prototype.buildInitProgram = function () {
     this.runIndexes(indexesDrawCircle, this.keyWords.DibujarCirculo);
     this.runIndexes(indexesDrawRectangulo, this.keyWords.DibujarRectangulo);
     this.runIndexes(indexesDrawTriangulo, this.keyWords.DibujarTriangulo);
-  } else {
-
+  }
+  else if (indexesStart.length >= 2) {
+    this.addTemplate(`no puedes poner ** ${indexesStart.length} Inicio** en el programa`);
+  }
+  else {
+    this.addTemplate("Ahora debes definir el punto de entrada del programa :p usando **Inicio**");
   }
 }
 
@@ -84,11 +92,9 @@ Interpret.prototype.runIndexes = function (arrIndexes = [], keyword) {
 
 Interpret.prototype.getCompared = function (position, keyword) {
   // debugger;
-  let i = 0;
     switch (keyword) {
       case this.keyWords.DibujarCirculo: {
-        this.getComparedFunctions(position);
-        this.drawFigure(position + 1, position + 2);
+        this.buildParamsRectangle(position);
       }
       case this.keyWords.Constante: {
         this.createConstante(position);
@@ -101,7 +107,7 @@ Interpret.prototype.createConstante = function (position) {
   let clave = this.tokens[position + 1];
   let valor = this.tokens[position + 2];
   debugger;
-  if (typeof valor === 'number') {
+  if (typeof valor === 'number' && typeof clave !== 'number') {
     if (this.constantes.length === 0) {
       this.constantes.push({ name: clave, value: valor })
     } else {
@@ -114,7 +120,7 @@ Interpret.prototype.createConstante = function (position) {
       }
     }
   } else {
-    this.addTemplate(`El valor que intentas asignar en: ${clave} : ${valor} no es posible`);
+    this.addTemplate(`El valor que intentas asignar con clave: ${clave} y valor: ${valor} } no es posible`);
   }
 }
 
@@ -125,11 +131,32 @@ Interpret.prototype.getFields = function (array, clave) {
     return output;
 }
 
+Interpret.prototype.buildParamsRectangle = function (position) {
+  // must containt 13 positions ( 2, 4, 6, 8, 10, Color);
+  let iniFn = this.tokens[position + 1] === "(";
+  let color = this.tokens[position + 12];
+  let finFn = this.tokens[position + 13] === ")";
+  let params = [
+    this.tokens[position + 2],
+    this.tokens[position + 6],
+    this.tokens[position + 8],
+    this.tokens[position + 10],
+  ];
+  if (iniFn && params.length === 4 && color && finFn) { 
+    this.addTemplate("Función escrita correctamente");
+   }
+}
+
+// I guarentee that a function arrives
 Interpret.prototype.getComparedFunctions = function (position) { 
+
+  // check if it containts constants
+  if(position) {}
+
   let v1, v2;
   if (this.tokens[position + 1] === "(") {
     v1 = this.tokens[position + 2];
-    console.log(!"Iniciando instrucción");
+    console.log("Iniciando instrucción");
     if (this.tokens[position + 5] === ")") {
       console.log("fin de la instrucción");
     } else console.log(`la función ${this.tokens[position]} debe terminar con )`)
