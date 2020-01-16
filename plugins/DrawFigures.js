@@ -2,6 +2,8 @@ function DrawFigures(config) {
   this.canvas = config.canvas;
   console.log(this.canvas);
   this.ctx = this.canvas.getContext('2d');
+  this.ids = [];
+
 }
 
 DrawFigures.prototype.drawLine = function () {
@@ -17,7 +19,8 @@ DrawFigures.prototype.drawLine = function () {
   // this.lienzo.closePath(); // cerrar lienzo o terminar trazo
 }
 
-DrawFigures.prototype.dibujarRectangulo = function (coordX, coordY, largo, alto, identificador, color) {
+DrawFigures.prototype.dibujarRectangulo = function (coordX, coordY, largo, alto, id, color) {
+  this.ids.push(id);
   this.ctx.rect(coordX, coordY, largo, alto);
   this.ctx.fillStyle = color;
   this.ctx.fill();

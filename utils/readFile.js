@@ -1,17 +1,15 @@
 function readFile(htmlFile, input) {
-  let content;
   let file = htmlFile.files[0];
   let reader = new FileReader();
 
   reader.onload = function () {
-    input.value = reader.result;
-    return content;
+    return input.value = reader.result;
   }
 
   if (file) {
     reader.readAsText(file, 'UTF-8');
   } else {
-    input.value = "";
+    return input.value = "";
   }
 }
 

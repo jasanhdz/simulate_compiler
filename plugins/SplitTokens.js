@@ -1,9 +1,8 @@
 import { keyWords } from "../reservTokens.js";
 
-function SplitTokens(config) {
+function SplitTokens() {
   this.tokenObject = [];
   this.keyWords = { ...keyWords };
-  this.interpret = config.interpret;
   this.tokens = [];
 }
 
@@ -19,9 +18,12 @@ SplitTokens.prototype.createTokens = function (str) {
   });
   this.tokenObject = obj;
   this.tokens = obj2;
-  console.log(this.tokens);
-  // aqui debemos pasarle los tokens al Interpret
-  this.interpret.getTokens(this.tokenObject, this.tokens)
+
+  // return the tokens to the Interpret
+  return {
+    tokenObjects: this.tokenObject,
+    tokens: this.tokens
+  }
 }
 
 SplitTokens.prototype.verifyNumber = function (token) {
