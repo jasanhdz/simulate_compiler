@@ -4,12 +4,14 @@ function Interpret(object) {
   this.debuger = object.debuger;
   this.arrayMessages = [];
   this.keyWords = { ...keyWords };
+  this.drawings = object.drawings;
 }
 
 Interpret.prototype.getTokens = function (objectTokens, tokens) {
   this.objectTokens = objectTokens;
   this.tokens = tokens;
   this.constantes = [];
+  this.namesConstantes = [];
   this.buildNameProgram();
 }
 
@@ -93,11 +95,11 @@ Interpret.prototype.runIndexes = function (arrIndexes = [], keyword) {
 Interpret.prototype.getCompared = function (position, keyword) {
   // debugger;
     switch (keyword) {
-      case this.keyWords.DibujarCirculo: {
-        this.buildParamsRectangle(position);
+      case this.keyWords.DibujarRectangulo: {
+        return this.buildParamsRectangle(position);
       }
       case this.keyWords.Constante: {
-        this.createConstante(position);
+       return this.createConstante(position);
       }
     }
   console.log(this.constantes);
@@ -110,6 +112,7 @@ Interpret.prototype.createConstante = function (position) {
   if (typeof valor === 'number' && typeof clave !== 'number') {
     if (this.constantes.length === 0) {
       this.constantes.push({ name: clave, value: valor })
+      this.namesConstantes.push(clave);
     } else {
       let getNames = this.getFields(this.constantes, "name");
       debugger;
@@ -134,25 +137,41 @@ Interpret.prototype.getFields = function (array, clave) {
 Interpret.prototype.buildParamsRectangle = function (position) {
   // must containt 13 positions ( 2, 4, 6, 8, 10, Color);
   let iniFn = this.tokens[position + 1] === "(";
-  let color = this.tokens[position + 12];
+  let color = this.keyWords[this.tokens[position + 12]];
   let finFn = this.tokens[position + 13] === ")";
+  let id = this.tokens[position + 10];
   let params = [
     this.tokens[position + 2],
+    this.tokens[position + 4],
     this.tokens[position + 6],
     this.tokens[position + 8],
-    this.tokens[position + 10],
   ];
-  if (iniFn && params.length === 4 && color && finFn) { 
+  let finalValue = [];
+
+  if (iniFn && params.length === 4 && color && finFn) {
+    debugger;
     this.addTemplate("Función escrita correctamente");
-   }
+
+    params.forEach(e => {
+      if (typeof e === "string") {
+        let r = this.constantes.find(constante => constante.name === e)
+        debugger;
+        if (r !== undefined) {
+          finalValue.push(r.value);
+        } 
+      } else {
+        finalValue.push(e);
+      }
+    })
+  }
+  let getParams = [...finalValue, id, color];
+  this.drawings.dibujarRectangulo(...getParams);
 }
 
 // I guarentee that a function arrives
 Interpret.prototype.getComparedFunctions = function (position) { 
 
   // check if it containts constants
-  if(position) {}
-
   let v1, v2;
   if (this.tokens[position + 1] === "(") {
     v1 = this.tokens[position + 2];

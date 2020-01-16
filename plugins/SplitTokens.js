@@ -9,7 +9,7 @@ function SplitTokens(config) {
 
 SplitTokens.prototype.createTokens = function (str) {
   let obj = [], obj2 = [];
-  this.tokens = str.value.split(/\.*(\(|\)|\s|\;)/);
+  this.tokens = str.value.split(/\.*(\(|\)|\s|\;|[,])/);
   this.tokens = this.tokens.filter(
     element => element !== "" && element !== "\n" && element !== " "
   );
