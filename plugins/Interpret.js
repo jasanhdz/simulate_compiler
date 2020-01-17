@@ -62,11 +62,11 @@ Interpret.prototype.buildInitProgram = function () {
     const indexesDrawCircle = this.getAllIndexes(this.tokens, this.keyWords.DibujarCirculo);
     const indexesDrawTriangulo = this.getAllIndexes(this.tokens, this.keyWords.DibujarTriangulo);
     const indexesDrawRectangulo = this.getAllIndexes(this.tokens, this.keyWords.DibujarRectangulo);
-    // console.log(indexesDrawCircle);
-    // console.log(this.words);
-    this.runIndexes(indexesDrawCircle, this.keyWords.DibujarCirculo);
-    this.runIndexes(indexesDrawRectangulo, this.keyWords.DibujarRectangulo);
-    this.runIndexes(indexesDrawTriangulo, this.keyWords.DibujarTriangulo);
+    const indexesDeleteFigure = this.getAllIndexes(this.tokens, this.keyWords.EliminarFigura);
+    // juntamos las positiones de las functiones
+    let indexesFunctions = indexesDrawCircle.concat(indexesDrawTriangulo).concat(indexesDrawRectangulo).concat(indexesDeleteFigure); 
+    indexesFunctions = indexesFunctions.sort((a, b) => a - b);
+    this.runIndexes(indexesFunctions);
   }
   else if (indexesStart.length >= 2) {
     this.Debuger.Error(`no puedes poner ** ${indexesStart.length} Inicio** en el programa`);
@@ -76,15 +76,14 @@ Interpret.prototype.buildInitProgram = function () {
   }
 }
 
-Interpret.prototype.runIndexes = function (arrIndexes = [], keyword) {
-  arrIndexes.forEach(key => {
-    this.getCompared(key, keyword);
+Interpret.prototype.runIndexes = function (arrIndexes = []) {
+  arrIndexes.forEach(position => {
+    this.getCompared(position, this.tokens[position]);
   })
 }
 
 Interpret.prototype.getCompared = function (position, keyword) {
-  // debugger;
-    switch (keyword) {
+  switch (keyword) {
       case this.keyWords.DibujarRectangulo: 
         return this.buildParamsRectangle(position);
       case this.keyWords.Constante: 
@@ -93,11 +92,28 @@ Interpret.prototype.getCompared = function (position, keyword) {
         return this.buildParamsCircle(position);
       case this.keyWords.DibujarTriangulo:
         return this.buildParamsTriangle(position);
+      case this.keyWords.EliminarFigura:
+        return this.buildParamDeleteFigure(position);
       default:
         return 0;
     }
   console.log(this.constantes);
 }
+
+Interpret.prototype.buildParamDeleteFigure = function (position) {
+  // EliminarFigura(id);
+  debugger;
+  let iniFn = this.tokens[position + 1] === "(";
+  let id = this.tokens[position + 2]
+  let finFn = this.tokens[position + 3] === ")";
+  if (iniFn && id && finFn) {
+    this.Debuger.Error("Función escrita correctamente");
+    this.drawings.removeFigure(id);
+  } else {
+    this.Debuger.Error("La función debe abrir y cerrar parantesis");
+  }
+}
+ 
 
 Interpret.prototype.createConstante = function (position) {
   let clave = this.tokens[position + 1];

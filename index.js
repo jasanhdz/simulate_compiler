@@ -18,7 +18,7 @@ const tokens = new Interpret({
   container,
 });
 
-$button.onclick = () => canvas.innerHTML = '';
+$clean.onclick = () => tokens.drawings.cleanCanvas();
 $button.onclick = () => tokens.processTokens(string);
 fileToLoad.onchange = () => {
   readFile(fileToLoad, string);

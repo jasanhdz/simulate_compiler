@@ -18,11 +18,12 @@ SplitTokens.prototype.createTokens = function (str) {
   });
   this.tokenObject = obj;
   this.tokens = obj2;
-
+  console.log(this.tokenObject);
+  debugger;
   // return the tokens to the Interpret
   return {
     tokenObjects: this.tokenObject,
-    tokens: this.tokens
+    tokens: this.tokens,
   }
 }
 
@@ -136,5 +137,20 @@ SplitTokens.prototype.verifyToken = function(token) {
       }
   }
 };
+
+// SplitTokens.prototype.veryFunctions = function (tokenFn) {
+//   switch (tokenFn) {
+//     case this.keyWords.DibujarCirculo:
+//       return tokenFn
+//     case this.keyWords.DibujarRectangulo:
+//       return tokenFn
+//     case this.keyWords.DibujarTriangulo:
+//       return tokenFn
+//     case this.keyWords.EliminarFigura:
+//       return tokenFn
+//     case this.keyWords.Dormir:
+//       return tokenFn
+//   }
+// }
 
 export default SplitTokens;

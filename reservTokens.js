@@ -14,3 +14,4 @@ export let keyWords = {
   AMARILLO: "AMARILLO",
   Constante: "Constante",
 }
+
