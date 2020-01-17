@@ -1,29 +1,59 @@
-function DrawFigures(config) { 
+function DrawFigures(config) {
   this.canvas = config.canvas;
   console.log(this.canvas);
-  this.ctx = this.canvas.getContext('2d');
+  this.ctx = this.canvas.getContext("2d");
   this.ids = [];
-
 }
 
-DrawFigures.prototype.drawLine = function () {
-  // this.lienzo.beginPath();
-  // this.lienzo.strokeStyle = "red";
-  // this.lienzo.moveTo(100, 100);
-  // this.lienzo.lineTo(200, 200); // trazar una linea
-  // this.lienzo.moveTo(100, 100);
-  // this.lienzo.lineTo(200, 100);
-  // this.lienzo.moveTo(200, 100);
-  // this.lienzo.lineTo(200, 200);
-  // this.lienzo.stroke();
-  // this.lienzo.closePath(); // cerrar lienzo o terminar trazo
-}
-
-DrawFigures.prototype.dibujarRectangulo = function (coordX, coordY, largo, alto, id, color) {
+DrawFigures.prototype.dibujarRectangulo = function (
+  coordX, coordY, largo, alto, id, color) {
   this.ids.push(id);
+  this.ctx.beginPath();
   this.ctx.rect(coordX, coordY, largo, alto);
+  this.ctx.closePath();
+
+  this.ctx.lineWidth = 2;
+  this.strokeStyle = "#666666";
+  this.ctx.stroke();
+
   this.ctx.fillStyle = color;
   this.ctx.fill();
-}
+  console.log(this.ids);
+};
+
+DrawFigures.prototype.dibujarCirculo = function (
+  coordX, coordY, radio, id, color) {
+  this.ids.push(id);
+  this.ctx.beginPath();
+  this.ctx.arc(coordX, coordY, radio, 0, 2 * Math.PI);
+  this.ctx.closePath();
+
+  this.ctx.lineWidth = 2;
+  this.strokeStyle = "#666666";
+  this.ctx.stroke();
+
+  this.ctx.fillStyle = color;
+  this.ctx.fill();
+  console.log(this.ids);
+};
+
+DrawFigures.prototype.dibujarTriangulo = function (
+  coordX1, coordY1, coordX2, coordY2, coordX3, coordY3,
+  id, color) { 
+  this.ids.push(id);
+  this.ctx.beginPath();
+  this.ctx.moveTo(coordX1, coordY1);
+  this.ctx.lineTo(coordX2, coordY2);
+  this.ctx.lineTo(coordX3, coordY3);
+  this.ctx.closePath();
+
+  this.ctx.lineWidth = 2;
+  this.strokeStyle = "#666666";
+  this.ctx.stroke();
+
+  this.ctx.fillStyle = color;
+  this.ctx.fill();
+  console.log(this.ids);
+};
 
 export default DrawFigures;

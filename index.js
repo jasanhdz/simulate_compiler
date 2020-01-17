@@ -8,6 +8,7 @@ const container = document.getElementById("debugger");
 const canvas = document.getElementById('area_de_dibujo');
 const string = document.getElementById("tokens");
 const $button = document.getElementById("interprete");
+const $clean = document.getElementById('limpiar');
 const fileToLoad = document.getElementById("file");
 
 const tokens = new Interpret({
@@ -17,7 +18,7 @@ const tokens = new Interpret({
   container,
 });
 
-
+$button.onclick = () => canvas.innerHTML = '';
 $button.onclick = () => tokens.processTokens(string);
 fileToLoad.onchange = () => {
   readFile(fileToLoad, string);

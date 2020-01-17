@@ -85,12 +85,16 @@ Interpret.prototype.runIndexes = function (arrIndexes = [], keyword) {
 Interpret.prototype.getCompared = function (position, keyword) {
   // debugger;
     switch (keyword) {
-      case this.keyWords.DibujarRectangulo: {
+      case this.keyWords.DibujarRectangulo: 
         return this.buildParamsRectangle(position);
-      }
-      case this.keyWords.Constante: {
+      case this.keyWords.Constante: 
        return this.createConstante(position);
-      }
+      case this.keyWords.DibujarCirculo:
+        return this.buildParamsCircle(position);
+      case this.keyWords.DibujarTriangulo:
+        return this.buildParamsTriangle(position);
+      default:
+        return 0;
     }
   console.log(this.constantes);
 }
@@ -127,7 +131,7 @@ Interpret.prototype.buildParamsRectangle = function (position) {
   // must containt 13 positions ( 2, 4, 6, 8, 10, Color);
   let iniFn = this.tokens[position + 1] === "(";
   let color = GetColor(this.keyWords[this.tokens[position + 12]]);
-  // debugger;
+  debugger;
   let finFn = this.tokens[position + 13] === ")";
   let id = this.tokens[position + 10];
   let params = [
@@ -138,7 +142,7 @@ Interpret.prototype.buildParamsRectangle = function (position) {
   ];
   let finalValue = [];
 
-  if (iniFn && params.length === 4 && color && finFn) {
+  if (iniFn && params.length === 4 && color && id && finFn) {
     // debugger;
     this.Debuger.Error("Función escrita correctamente");
 
@@ -155,6 +159,79 @@ Interpret.prototype.buildParamsRectangle = function (position) {
     })
     let getParams = [...finalValue, id, color];
     this.drawings.dibujarRectangulo(...getParams);
+  }
+}
+
+Interpret.prototype.buildParamsCircle = function (position) {
+  // must containt 11 positions ( coordX, coordY, radio, id, color )
+  let iniFn = this.tokens[position + 1] === "(";
+  let color = GetColor(this.keyWords[this.tokens[position + 10]]);
+  // debugger;
+  let finFn = this.tokens[position + 11] === ")";
+  let id = this.tokens[position + 8];
+  let params = [
+    this.tokens[position + 2],
+    this.tokens[position + 4],
+    this.tokens[position + 6],
+  ];
+  let finalValue = [];
+  debugger;
+  if (iniFn && params.length === 3 && color && id && finFn) {
+    debugger;
+    this.Debuger.Error("Función escrita correctamente");
+
+    params.forEach(e => {
+      if (typeof e === "string") {
+        let r = this.constantes.find(constante => constante.name === e)
+        // debugger;
+        if (r !== undefined) {
+          finalValue.push(r.value);
+        } 
+      } else {
+        finalValue.push(e);
+      }
+    })
+    let getParams = [...finalValue, id, color];
+    this.drawings.dibujarCirculo(...getParams);
+    debugger;
+  }
+}
+
+Interpret.prototype.buildParamsTriangle = function (position) {
+  // must containt 17 positions
+  // DibujarTriangulo(x1, y1, x2, y2, x3, y3, id, color);
+  let iniFn = this.tokens[position + 1] === "(";
+  let color = GetColor(this.keyWords[this.tokens[position + 16]]);
+  // debugger;
+  let finFn = this.tokens[position + 17] === ")";
+  let id = this.tokens[position + 14];
+  let params = [
+    this.tokens[position + 2], // x1
+    this.tokens[position + 4], // y1
+    this.tokens[position + 6], // x2
+    this.tokens[position + 8], // y2
+    this.tokens[position + 10], // x3
+    this.tokens[position + 12], // y3
+  ];
+  let finalValue = [];
+  debugger;
+  if (iniFn && params.length === 6 && color && id && finFn) {
+    debugger;
+    this.Debuger.Error("Función escrita correctamente");
+
+    params.forEach(e => {
+      if (typeof e === "string") {
+        let r = this.constantes.find(constante => constante.name === e)
+        // debugger;
+        if (r !== undefined) {
+          finalValue.push(r.value);
+        } 
+      } else {
+        finalValue.push(e);
+      }
+    })
+    let getParams = [...finalValue, id, color];
+    this.drawings.dibujarTriangulo(...getParams);
   }
 }
 
