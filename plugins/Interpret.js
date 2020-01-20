@@ -8,6 +8,7 @@ function Interpret(object) {
   this.drawings = object.drawings;
   this.splitTokens = object.splitTokens;
   this.keyWords = { ...keyWords };
+  this.ids = [];
 }
 
 Interpret.prototype.processTokens = function (str) {
@@ -97,7 +98,6 @@ Interpret.prototype.getCompared = function (position, keyword) {
       default:
         return 0;
     }
-  console.log(this.constantes);
 }
 
 Interpret.prototype.buildParamDeleteFigure = function (position) {
@@ -108,6 +108,9 @@ Interpret.prototype.buildParamDeleteFigure = function (position) {
   let finFn = this.tokens[position + 3] === ")";
   if (iniFn && id && finFn) {
     this.Debuger.Error("Función escrita correctamente");
+    console.log(this.ids);
+    debugger;
+    this.ids.splice(this.ids.indexOf(id), 1);
     this.drawings.removeFigure(id);
   } else {
     this.Debuger.Error("La función debe abrir y cerrar parantesis");
@@ -174,7 +177,12 @@ Interpret.prototype.buildParamsRectangle = function (position) {
       }
     })
     let getParams = [...finalValue, id, color];
-    this.drawings.dibujarRectangulo(...getParams);
+    if (!this.ids.includes(id)) {
+      this.drawings.dibujarRectangulo(...getParams);
+      this.ids.push(id);
+    } else {
+      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+    }
   }
 }
 
@@ -208,8 +216,12 @@ Interpret.prototype.buildParamsCircle = function (position) {
       }
     })
     let getParams = [...finalValue, id, color];
-    this.drawings.dibujarCirculo(...getParams);
-    debugger;
+    if (!this.ids.includes(id)) {
+      this.drawings.dibujarCirculo(...getParams);
+      this.ids.push(id);
+    } else {
+      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+    }
   }
 }
 
@@ -247,7 +259,12 @@ Interpret.prototype.buildParamsTriangle = function (position) {
       }
     })
     let getParams = [...finalValue, id, color];
-    this.drawings.dibujarTriangulo(...getParams);
+    if (!this.ids.includes(id)) {
+      this.drawings.dibujarTriangulo(...getParams);
+      this.ids.push(id);
+    } else {
+      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+    }
   }
 }
 
