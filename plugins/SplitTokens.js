@@ -19,7 +19,7 @@ SplitTokens.prototype.createTokens = function (str) {
   this.tokenObject = obj;
   this.tokens = obj2;
   console.log(this.tokenObject);
-  debugger;
+  // debugger;
   // return the tokens to the Interpret
   return {
     tokenObjects: this.tokenObject,

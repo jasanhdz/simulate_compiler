@@ -8,7 +8,6 @@ function DrawFigures(config) {
 
 DrawFigures.prototype.dibujarRectangulo = function (
   coordX, coordY, largo, alto, id, color) {
-  debugger;
   this.ctx.beginPath();
   this.ctx.rect(coordX, coordY, largo, alto);
   this.ctx.closePath();
@@ -30,7 +29,6 @@ DrawFigures.prototype.dibujarRectangulo = function (
 
 DrawFigures.prototype.dibujarCirculo = function (
   coordX, coordY, radio, id, color) {
-  debugger;
   this.ctx.beginPath();
   this.ctx.arc(coordX, coordY, radio, 0, 2 * Math.PI);
   this.ctx.closePath();
@@ -54,7 +52,6 @@ DrawFigures.prototype.dibujarCirculo = function (
 DrawFigures.prototype.dibujarTriangulo = function (
   coordX1, coordY1, coordX2, coordY2, coordX3, coordY3,
   id, color) { 
-  debugger;
   this.ctx.beginPath();
   this.ctx.moveTo(coordX1, coordY1);
   this.ctx.lineTo(coordX2, coordY2);
@@ -103,7 +100,7 @@ DrawFigures.prototype.removeFigure = function (id) {
 
 DrawFigures.prototype.updatedFigures = function (figure) {
   // painting figures
-  debugger;
+  // debugger;
   switch (figure.type) {
       case "Triangle": {
         return this.dibujarTriangulo(...Object.values(figure));
