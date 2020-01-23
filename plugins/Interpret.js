@@ -29,7 +29,7 @@ Interpret.prototype.verifyConstantes = function() {
     this.Debuger.Error(`constantes: ${JSON.stringify(this.constantes)}`, "blue");
     this.buildInitProgram();
   } else {
-    this.Debuger.Error("Deberías definir primero las constantes");
+    this.Debuger.Error("Syntax Error: Debes definir primero las constantes");
     console.log(this.constantes.length);
   }
 };
@@ -49,22 +49,24 @@ Interpret.prototype.buildNameProgram = function() {
         this.Debuger.Error(`${this.tokens[position]} ${name}`, "blue");
         this.verifyConstantes();
       } else {
-        this.Debuger.Error(`El programa debe estar definido`);
+        this.Debuger.Error(`Semantic Error: El programa debe estar definido`);
         this.Debuger.Error(`Fin del programa`);
       }
     } else {
       this.Debuger.Error(
-        `**${this.keyWords.Programa}** no se puede definir más de 1 vez :(`
+        `Syntax Error: **${this.keyWords.Programa}** no se puede definir más de 1 vez :(`
       );
     }
   } else {
-    this.Debuger.Error("El programa debe comenzar con la palabra **Programa**");
+    this.Debuger.Error("Syntax Error: El programa debe comenzar con la palabra **Programa**");
   }
 };
 
 Interpret.prototype.buildInitProgram = function() {
   // this.containerDebuger.innerHTML = "";
   const indexesStart = this.getAllIndexes(this.tokens, this.keyWords.Inicio);
+  const indexesEnd = this.getAllIndexes(this.tokens, this.keyWords.Fin);
+  console.log(indexesEnd);
   if (indexesStart.length === 1) {
     const indexesDrawCircle = this.getAllIndexes(
       this.tokens,
@@ -83,35 +85,39 @@ Interpret.prototype.buildInitProgram = function() {
       this.keyWords.EliminarFigura
     );
     const indexesDormir = this.getAllIndexes(this.tokens, this.keyWords.Dormir);
-    // get functions positions
-    let indexesFunctions = indexesDrawCircle
-      .concat(indexesDrawTriangulo)
-      .concat(indexesDrawRectangulo)
-      .concat(indexesDormir)
-      .concat(indexesDeleteFigure);
-    // we order the positions of the functions
-    this.indexesFunctions = indexesFunctions.sort((a, b) => a - b);
-    // we iterate according to the positions
-    this.runIndexes(this.indexesFunctions);
+    if (this.tokens[this.tokens.length-1] === "Fin") {
+      // get functions positions
+      if (indexesEnd.length === 1) { 
+        let indexesFunctions = indexesDrawCircle
+        .concat(indexesDrawTriangulo)
+        .concat(indexesDrawRectangulo)
+        .concat(indexesDormir)
+        .concat(indexesDeleteFigure);
+      // we order the positions of the functions
+      this.indexesFunctions = indexesFunctions.sort((a, b) => a - b);
+      // we iterate according to the positions
+      this.runIndexes(this.indexesFunctions);
+      } else {
+        this.Debuger.Error(
+          `Semantic Error: no puedes poner ** ${indexesEnd.length} Fin** en el programa`
+        );
+       }
+    }
+    else {
+      this.Debuger.Error(
+        "Syntax Error: Debes finalizar la instrucción con **Fin**"
+      );
+    }
   } else if (indexesStart.length >= 2) {
     this.Debuger.Error(
-      `no puedes poner ** ${indexesStart.length} Inicio** en el programa`
+      `Semantic Error: no puedes poner ** ${indexesStart.length} Inicio** en el programa`
     );
   } else {
     this.Debuger.Error(
-      "Ahora debes definir el punto de entrada del programa :p usando **Inicio**"
+      "Syntax Error: Ahora debes definir el punto de entrada del programa :p usando **Inicio**"
     );
   }
 };
-
-// Interpret.prototype.runIndexes = function(arrIndexes = []) {
-//   arrIndexes.forEach(position => {
-//     switch (true) {
-//       case position === "Dormir": 
-        
-//     }
-//   });
-// };
 
 Interpret.prototype.runIndexes = function (arrIndexes = []) {
   for (let i = 0; i < arrIndexes.length; i++) {
@@ -124,9 +130,6 @@ Interpret.prototype.runIndexes = function (arrIndexes = []) {
       this.getCompared(arrIndexes[i], this.tokens[arrIndexes[i]]);
     }
   }
-  // arrIndexes.forEach(position => {
-  //   this.getCompared(position, this.tokens[position]);
-  // });
 };
 
 Interpret.prototype.getCompared = function (position, keyword) {
@@ -154,16 +157,20 @@ Interpret.prototype.buildParamSleep = function(position) {
   const time = this.tokens[position + 2];
   const finFn = this.tokens[position + 3] === ")";
   if (iniFn && time && finFn) {
-    this.tokens.splice(position, 1);
-    // this.tokens.splice(position + 1, 1);
-    // this.tokens.splice(position + 2, 1);
-    // this.tokens.splice(position + 3, 1);
-    debugger;
-    this.ids = [];
-    this.sleep(time);
-    console.log("ultimo");
+    if (typeof time === "number") {
+      this.tokens.splice(position, 1);
+      // this.tokens.splice(position + 1, 1);
+      // this.tokens.splice(position + 2, 1);
+      // this.tokens.splice(position + 3, 1);
+      debugger;
+      this.ids = [];
+      this.sleep(time);
+      console.log("ultimo");
+    } else {
+      this.Debuger.Error(`SyntaxError: el ${time} de Dormir no es un número :'(`)
+    }
   } else {
-    this.Debuger.Error("La función debe abrir y cerrar parantesis");
+    this.Debuger.Error("SyntaxError: La función debe abrir y cerrar parantesis");
   }
 };
 
@@ -180,7 +187,7 @@ Interpret.prototype.buildParamDeleteFigure = function(position) {
     this.ids.splice(this.ids.indexOf(id), 1);
     this.drawings.removeFigure(id);
   } else {
-    this.Debuger.Error("La función debe abrir y cerrar parantesis");
+    this.Debuger.Error("SyntaxError: La función debe abrir y cerrar parantesis");
   }
 };
 
@@ -197,12 +204,12 @@ Interpret.prototype.createConstante = function(position) {
       if (!getNames.includes(clave)) {
         this.constantes.push({ name: clave, value: valor });
       } else {
-        this.Debuger.Error(`La constante ya esta declarada :(`);
+        this.Debuger.Error(`SyntaxError: La constante ya esta declarada :(`);
       }
     }
   } else {
     this.Debuger.Error(
-      `El valor que intentas asignar con clave: ${clave} y valor: ${valor} } no es posible`
+      `SyntaxError: El valor que intentas asignar con clave: ${clave} y valor: ${valor} } no es posible`
     );
   }
 };
@@ -243,12 +250,13 @@ Interpret.prototype.buildParamsRectangle = function(position) {
         finalValue.push(e);
       }
     });
+
     let getParams = [...finalValue, id, color];
     if (!this.ids.includes(id)) {
       this.drawings.dibujarRectangulo(...getParams);
       this.ids.push(id);
     } else {
-      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+      this.Debuger.Error("SyntaxError: Ya existe una figura con ese Id :p ");
     }
   }
 };
@@ -287,7 +295,7 @@ Interpret.prototype.buildParamsCircle = function(position) {
       this.drawings.dibujarCirculo(...getParams);
       this.ids.push(id);
     } else {
-      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+      this.Debuger.Error("SyntaxError: Ya existe una figura con ese Id :p ");
     }
   }
 };
@@ -329,7 +337,7 @@ Interpret.prototype.buildParamsTriangle = function(position) {
       this.drawings.dibujarTriangulo(...getParams);
       this.ids.push(id);
     } else {
-      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+      this.Debuger.Error("SyntaxError: Ya existe una figura con ese Id :p ");
     }
   }
 };
@@ -344,9 +352,9 @@ Interpret.prototype.getComparedFunctions = function(position) {
     if (this.tokens[position + 5] === ")") {
       console.log("fin de la instrucción");
     } else
-      console.log(`la función ${this.tokens[position]} debe terminar con )`);
+      console.log(`SyntaxError: la función ${this.tokens[position]} debe terminar con )`);
   } else {
-    console.log(`la función ${this.tokens[position]} debe llevar parentesis`);
+    console.log(`SyntaxError: la función ${this.tokens[position]} debe llevar parentesis`);
   }
 };
 
@@ -363,13 +371,15 @@ Interpret.prototype.getAllIndexes = function(arr, val) {
 
 Interpret.prototype.sleep = function (ms, flag) {
   let me = this;
+  let time;
   if (!flag) {
+    time = ms * 1000;
     setTimeout(function () {
       me.sleep(ms, true);
-    }, ms)
+    }, time)
   } else {
     // debugger;
-    console.log(`han pasado ${ms} miliSeconds`);
+    console.log(`han pasado ${ms} Segundos`);
     console.log(me.tokens);
     me.buildInitProgram();
   }
