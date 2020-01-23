@@ -26,7 +26,7 @@ Interpret.prototype.verifyConstantes = function() {
   );
   this.runIndexes(indexesConstante, this.keyWords.Constante);
   if (this.constantes.length > 0) {
-    this.Debuger.Error(`constantes: ${JSON.stringify(this.constantes)}`);
+    this.Debuger.Error(`constantes: ${JSON.stringify(this.constantes)}`, "blue");
     this.buildInitProgram();
   } else {
     this.Debuger.Error("Deberías definir primero las constantes");
@@ -46,7 +46,7 @@ Interpret.prototype.buildNameProgram = function() {
       let position = this.tokens.indexOf("Programa");
       let name = this.tokens[position + 1];
       if (name !== undefined) {
-        this.Debuger.Error(`${this.tokens[position]} ${name}`);
+        this.Debuger.Error(`${this.tokens[position]} ${name}`, "blue");
         this.verifyConstantes();
       } else {
         this.Debuger.Error(`El programa debe estar definido`);
@@ -63,7 +63,7 @@ Interpret.prototype.buildNameProgram = function() {
 };
 
 Interpret.prototype.buildInitProgram = function() {
-  this.containerDebuger.innerHTML = "";
+  // this.containerDebuger.innerHTML = "";
   const indexesStart = this.getAllIndexes(this.tokens, this.keyWords.Inicio);
   if (indexesStart.length === 1) {
     const indexesDrawCircle = this.getAllIndexes(
@@ -174,7 +174,7 @@ Interpret.prototype.buildParamDeleteFigure = function(position) {
   let id = this.tokens[position + 2];
   let finFn = this.tokens[position + 3] === ")";
   if (iniFn && id && finFn) {
-    this.Debuger.Error("Función escrita correctamente");
+    this.Debuger.Error("Función escrita correctamente", "blue");
     console.log(this.ids);
     // debugger;
     this.ids.splice(this.ids.indexOf(id), 1);
@@ -230,7 +230,7 @@ Interpret.prototype.buildParamsRectangle = function(position) {
 
   if (iniFn && params.length === 4 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente");
+    this.Debuger.Error("Función escrita correctamente", "blue");
 
     params.forEach(e => {
       if (typeof e === "string") {
@@ -269,7 +269,7 @@ Interpret.prototype.buildParamsCircle = function(position) {
   // debugger;
   if (iniFn && params.length === 3 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente");
+    this.Debuger.Error("Función escrita correctamente", "blue");
 
     params.forEach(e => {
       if (typeof e === "string") {
@@ -312,7 +312,7 @@ Interpret.prototype.buildParamsTriangle = function(position) {
   // debugger;
   if (iniFn && params.length === 6 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente");
+    this.Debuger.Error("Función escrita correctamente", "blue");
     params.forEach(e => {
       if (typeof e === "string") {
         let r = this.constantes.find(constante => constante.name === e);
@@ -325,12 +325,12 @@ Interpret.prototype.buildParamsTriangle = function(position) {
       }
     });
     let getParams = [...finalValue, id, color];
-    this.drawings.dibujarTriangulo(...getParams);
-    // if (!this.ids.includes(id)) {
-    //   this.ids.push(id);
-    // } else {
-    //   this.Debuger.Error("Ya existe una figura con ese Id :p ");
-    // }
+    if (!this.ids.includes(id)) {
+      this.drawings.dibujarTriangulo(...getParams);
+      this.ids.push(id);
+    } else {
+      this.Debuger.Error("Ya existe una figura con ese Id :p ");
+    }
   }
 };
 
@@ -360,19 +360,6 @@ Interpret.prototype.getAllIndexes = function(arr, val) {
   }
   return indexes;
 };
-
-// function sleep(ms, callback) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-  
-// };
-// function sleep(ms, callback) {
-//   if (!callback) {
-//     setTimeout(function () {
-      
-//     })
-//   }
-  
-// };
 
 Interpret.prototype.sleep = function (ms, flag) {
   let me = this;

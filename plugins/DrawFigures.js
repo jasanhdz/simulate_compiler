@@ -4,47 +4,65 @@ function DrawFigures(config) {
   this.ctx = this.canvas.getContext("2d");
   this.ids = [];
   this.figures = [];
+  this.Debuger = config.debuger;
+  this.widthContainer = 400;
+  this.heightContainer = 500;
 }
 
 DrawFigures.prototype.dibujarRectangulo = function (
   coordX, coordY, largo, alto, id, color) {
-  this.ctx.beginPath();
-  this.ctx.rect(coordX, coordY, largo, alto);
-  this.ctx.closePath();
-
-  this.ctx.lineWidth = 2;
-  this.strokeStyle = "#666666";
-  this.ctx.stroke();
-
-  this.ctx.fillStyle = color;
-  this.ctx.fill();
-  if (!this.ids.includes(id)) {
-    this.ids.push(id);
-    this.figures.push({
-      coordX, coordY, largo, alto, id, color,
-      type: "Rectangle"
-    });
+  if ((coordX + largo) < this.widthContainer && (coordY + alto) < this.heightContainer) {
+  // if (true) {
+    this.ctx.beginPath();
+    this.ctx.rect(coordX, coordY, largo, alto);
+    this.ctx.closePath();
+  
+    this.ctx.lineWidth = 2;
+    this.strokeStyle = "#666666";
+    this.ctx.stroke();
+  
+    this.ctx.fillStyle = color;
+    this.ctx.fill();
+    if (!this.ids.includes(id)) {
+      this.ids.push(id);
+      this.figures.push({
+        coordX, coordY, largo, alto, id, color,
+        type: "Rectangle"
+      });
+    }
+  } else {
+    this.Debuger.Error(`Semantic Error: No es posible dibujar el Rectangulo ${id} porque supera la dimensión de nuestra area de dibujo :'(`)
   }
 };
 
 DrawFigures.prototype.dibujarCirculo = function (
   coordX, coordY, radio, id, color) {
-  this.ctx.beginPath();
-  this.ctx.arc(coordX, coordY, radio, 0, 2 * Math.PI);
-  this.ctx.closePath();
-
-  this.ctx.lineWidth = 2;
-  this.strokeStyle = "#666666";
-  this.ctx.stroke();
-
-  this.ctx.fillStyle = color;
-  this.ctx.fill();
-
-  if (!this.ids.includes(id)) {
-    this.ids.push(id);
-    this.figures.push({
-      coordX, coordY, radio, id, color, type: "Circle",
-    });
+  let diametro = radio * 2;
+  debugger;
+  if (
+    (coordX < this.widthContainer && coordY < this.heightContainer) &&
+    (radio < coordX) && (radio < coordY) &&
+    (coordX + radio) < this.widthContainer && (coordY + radio) < this.heightContainer
+  ) {
+    this.ctx.beginPath();
+    this.ctx.arc(coordX, coordY, radio, 0, 2 * Math.PI);
+    this.ctx.closePath();
+  
+    this.ctx.lineWidth = 2;
+    this.strokeStyle = "#666666";
+    this.ctx.stroke();
+  
+    this.ctx.fillStyle = color;
+    this.ctx.fill();
+  
+    if (!this.ids.includes(id)) {
+      this.ids.push(id);
+      this.figures.push({
+        coordX, coordY, radio, id, color, type: "Circle",
+      });
+    }
+  } else {
+    this.Debuger.Error(`Semantic Error: No es posible dibujar un Circulo que supera la dimensión de nuestra area de dibujo :'(`)
   }
   
 };
@@ -52,26 +70,34 @@ DrawFigures.prototype.dibujarCirculo = function (
 DrawFigures.prototype.dibujarTriangulo = function (
   coordX1, coordY1, coordX2, coordY2, coordX3, coordY3,
   id, color) { 
-  this.ctx.beginPath();
-  this.ctx.moveTo(coordX1, coordY1);
-  this.ctx.lineTo(coordX2, coordY2);
-  this.ctx.lineTo(coordX3, coordY3);
-  this.ctx.closePath();
-
-  this.ctx.lineWidth = 2;
-  this.strokeStyle = "#666666";
-  this.ctx.stroke();
-
-  this.ctx.fillStyle = color;
-  this.ctx.fill();
-
-  if (!this.ids.includes(id)) {
-    this.ids.push(id);
-    this.figures.push({
-      coordX1, coordY1, coordX2,
-      coordY2, coordX3, coordY3,
-      id, color, type: "Triangle"
-    });
+  if (
+    (coordX1 < this.widthContainer && coordY1 < this.heightContainer) &&
+    (coordX2 < this.widthContainer && coordY2 < this.heightContainer) &&
+    (coordX3 < this.widthContainer && coordY3 < this.heightContainer)
+  ) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(coordX1, coordY1);
+    this.ctx.lineTo(coordX2, coordY2);
+    this.ctx.lineTo(coordX3, coordY3);
+    this.ctx.closePath();
+  
+    this.ctx.lineWidth = 2;
+    this.strokeStyle = "#666666";
+    this.ctx.stroke();
+  
+    this.ctx.fillStyle = color;
+    this.ctx.fill();
+  
+    if (!this.ids.includes(id)) {
+      this.ids.push(id);
+      this.figures.push({
+        coordX1, coordY1, coordX2,
+        coordY2, coordX3, coordY3,
+        id, color, type: "Triangle"
+      });
+    }
+  } else {
+    this.Debuger.Error(`Semantic Error: No es posible dibujar un Triangulo que supera la dimensión de nuestra area de dibujo :'(`)
   }
 
 };
@@ -113,5 +139,9 @@ DrawFigures.prototype.updatedFigures = function (figure) {
       }
     }
 }
+
+// DrawFigures.prototype.validateDrawingSize = function () {
+  
+// }
 
 export default DrawFigures;

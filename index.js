@@ -13,7 +13,7 @@ const fileToLoad = document.getElementById("file");
 
 const tokens = new Interpret({
   splitTokens: new SplitTokens(),
-  drawings: new DrawFigures({ canvas }),
+  drawings: new DrawFigures({ canvas, debuger: new Debuger({container}) }),
   debuger: new Debuger({ container }),
   container,
 });
@@ -27,19 +27,3 @@ fileToLoad.onchange = () => {
   readFile(fileToLoad, string);
   string.focus();
 };
-
-
-// function test(flag) {
-//   if(!flag)
-//   setTimeout(function () {
-//     console.log("hola");
-//     test(true);
-//   }, 6000);
-
-//   // otro código;
-//   else {
-//     console.log("No saludo");
-//   }
-// }
-
-// test();
