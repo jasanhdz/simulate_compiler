@@ -1,4 +1,4 @@
-import { keyWords } from "../reservTokens.js";
+import { keyWords, arrayKeyWords } from "../reservTokens.js";
 import GetColor from "../utils/colors.js";
 // import Debuger from './Debuger'
 
@@ -9,6 +9,7 @@ function Interpret(object) {
   this.splitTokens = object.splitTokens;
   this.keyWords = { ...keyWords };
   this.ids = [];
+  this.arrayKeyWords = [...arrayKeyWords];
 }
 
 Interpret.prototype.processTokens = function(str) {
@@ -19,18 +20,24 @@ Interpret.prototype.processTokens = function(str) {
   this.buildNameProgram();
 };
 
-Interpret.prototype.verifyConstantes = function() {
+Interpret.prototype.verifyConstantes = function () {
   const indexesConstante = this.getAllIndexes(
     this.tokens,
     this.keyWords.Constante
   );
-  this.runIndexes(indexesConstante, this.keyWords.Constante);
-  if (this.constantes.length > 0) {
-    this.Debuger.Error(`constantes: ${JSON.stringify(this.constantes)}`, "blue");
-    this.buildInitProgram();
+  if (indexesConstante.length < 2) {
+    this.runIndexes(indexesConstante, this.keyWords.Constante);
+    if (this.constantes.length > 0) {
+      this.Debuger.Error(`constantes: ${JSON.stringify(this.constantes)}`, "blue");
+      this.buildInitProgram();
+    } else {
+      this.Debuger.Error("Syntax Error: Debes definir primero las constantes");
+      console.log(this.constantes.length);
+    }
   } else {
-    this.Debuger.Error("Syntax Error: Debes definir primero las constantes");
-    console.log(this.constantes.length);
+    this.Debuger.Error(
+      `Syntax Error: **${this.keyWords.Constante}** no se puede definir más de 1 vez :(`
+    );
   }
 };
 
@@ -138,7 +145,7 @@ Interpret.prototype.getCompared = function (position, keyword) {
     case this.keyWords.DibujarRectangulo:
       return this.buildParamsRectangle(position);
     case this.keyWords.Constante:
-      return this.createConstante(position);
+      return this.createArrayConstantes(position);
     case this.keyWords.DibujarCirculo:
       return this.buildParamsCircle(position);
     case this.keyWords.DibujarTriangulo:
@@ -213,6 +220,43 @@ Interpret.prototype.createConstante = function(position) {
     );
   }
 };
+
+Interpret.prototype.createArrayConstantes = function (position) {
+  for (let i = position; i < this.tokens.length; i+=2) {
+    let clave = this.tokens[i + 1];
+    let valor = this.tokens[i + 2];
+    if (clave === "Inicio") {
+      break;
+    } else {
+        if (!this.arrayKeyWords.includes(clave)) {
+          if (typeof clave === "string" && typeof valor === "number") {
+            if (this.constantes.length === 0) {
+              this.constantes.push({ name: clave, value: valor });
+            } else {
+              let getNames = this.getFields(this.constantes, "name");
+              // debugger;
+              if (!getNames.includes(clave)) {
+                this.constantes.push({ name: clave, value: valor });
+              } else {
+                this.Debuger.Error(`SyntaxError: La constante ya esta declarada :(`);
+                break;
+              }
+            }
+          } else {
+            this.Debuger.Error(
+              `SyntaxError: El valor que intentas asignar con clave: ${clave} y valor: ${valor} } no es posible`
+            );
+            break;
+          }
+        } else {
+          this.Debuger.Error(
+            `SyntaxError: No puedes usar ${clave} porque es una Palabra reservada`
+          );
+          break;
+        }
+    }
+  }
+}
 
 Interpret.prototype.getFields = function(array, clave) {
   let output = [];

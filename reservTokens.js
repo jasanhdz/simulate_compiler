@@ -15,3 +15,17 @@ export let keyWords = {
   Constante: "Constante",
 }
 
+export let arrayKeyWords = [
+  "Programa",
+  "Fin",
+  "DibujarCirculo",
+  "DibujarRectangulo",
+  "EliminarFigura",
+  "Dormir",
+  "ROJO",
+  "AZUL",
+  "VERDE",
+  "NEGRO",
+  "AMARILLO"
+]
+
