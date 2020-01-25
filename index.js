@@ -10,10 +10,9 @@ const string = document.getElementById("tokens");
 const $button = document.getElementById("interprete");
 const $clean = document.getElementById('limpiar');
 const fileToLoad = document.getElementById("file");
-
 const tokens = new Interpret({
-  splitTokens: new SplitTokens(),
-  drawings: new DrawFigures({ canvas, debuger: new Debuger({container}) }),
+  splitTokens: new SplitTokens({ debuger: new Debuger({ container }) }),
+  drawings: new DrawFigures({ canvas, debuger: new Debuger({ container }) }),
   debuger: new Debuger({ container }),
   container,
 });
@@ -23,7 +22,21 @@ $clean.onclick = () => {
   tokens.ids = [];
   container.innerHTML = '';
 }
-$button.onclick = () => tokens.processTokens(string);
+$button.onclick = () => {
+  tokens.drawings.cleanCanvas();
+  tokens.ids = [];
+  container.innerHTML = '';
+
+  new Interpret({
+    splitTokens: new SplitTokens({ debuger: new Debuger({ container }) }),
+    drawings: new DrawFigures({ canvas, debuger: new Debuger({ container }) }),
+    debuger: new Debuger({ container }),
+    container,
+  }).processTokens(string)
+
+
+};
+
 fileToLoad.onchange = () => {
   readFile(fileToLoad, string);
   string.focus();

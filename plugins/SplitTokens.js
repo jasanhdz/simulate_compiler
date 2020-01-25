@@ -1,9 +1,10 @@
 import { keyWords } from "../reservTokens.js";
 
-function SplitTokens() {
+function SplitTokens(config) {
   this.tokenObject = [];
   this.keyWords = { ...keyWords };
   this.tokens = [];
+  this.Debuger = config.debuger;
 }
 
 SplitTokens.prototype.createTokens = function (str) {
@@ -14,13 +15,11 @@ SplitTokens.prototype.createTokens = function (str) {
   );
   this.tokens.forEach(element => {
     obj.push(this.verifyToken(element))
-    obj2.push(this.verifyNumber(element))
+    obj2.push(this.verifyNumber(element));
   });
   this.tokenObject = obj;
   this.tokens = obj2;
-  console.log(this.tokenObject);
-  // debugger;
-  // return the tokens to the Interpret
+  console.log(this.tokens);
   return {
     tokenObjects: this.tokenObject,
     tokens: this.tokens,
@@ -28,11 +27,23 @@ SplitTokens.prototype.createTokens = function (str) {
 }
 
 SplitTokens.prototype.verifyNumber = function (token) {
+  debugger;
   let isNumber = !isNaN(token);
   if (isNumber) {
     token.includes(".")
       ? (token = parseFloat(token))
       : (token = parseInt(token));
+  } 
+  else {
+    if (token !== ")" && token !== "(" && token !== "," && token !== "") {
+      if (this.verifyString(token)) {
+        return token
+      } else {
+        return this.Debuger.Error("Todos los identificadores deben comenzar con una letra y solo deben contener Letras y números");
+      }
+    } else {
+      return token
+    }
   }
   return token;
 }
@@ -138,19 +149,13 @@ SplitTokens.prototype.verifyToken = function(token) {
   }
 };
 
-// SplitTokens.prototype.veryFunctions = function (tokenFn) {
-//   switch (tokenFn) {
-//     case this.keyWords.DibujarCirculo:
-//       return tokenFn
-//     case this.keyWords.DibujarRectangulo:
-//       return tokenFn
-//     case this.keyWords.DibujarTriangulo:
-//       return tokenFn
-//     case this.keyWords.EliminarFigura:
-//       return tokenFn
-//     case this.keyWords.Dormir:
-//       return tokenFn
-//   }
-// }
+SplitTokens.prototype.verifyString = function (str) {
+  let FirstLetter = /^[A-Za-z]+[A-Za-z-0-9]*$/; 
+  if (str.match(FirstLetter)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 export default SplitTokens;

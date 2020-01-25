@@ -4,15 +4,25 @@ function Debuger(object) {
 }
 
 Debuger.prototype.Error = function (message, color) { 
-let obj = [];
+  let obj = [];
+  if (this.arrayMessages.length === 0) {
+    this.container.innerHTML = '';
+  }
   if (!this.arrayMessages.includes(message)) {
     obj.push(message);
     this.arrayMessages = obj;
     this.arrayMessages.map(msg => {
       const template = document.createElement('p');
-      color ? template.style.color = color : template.style.color = "red";
-      template.textContent = msg;
-      return this.container.appendChild(template);
+      if (color) {
+        template.style.color = color;
+        template.textContent = msg;
+        return this.container.appendChild(template);
+      } else {
+        template.style.color = "red";
+        template.textContent = msg;
+        this.container.appendChild(template);
+        throw new Error(msg);
+      }
     });
   }
 }

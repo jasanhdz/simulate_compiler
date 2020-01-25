@@ -12,8 +12,8 @@ function Interpret(object) {
   this.arrayKeyWords = [...arrayKeyWords];
 }
 
-Interpret.prototype.processTokens = function(str) {
-  const data = this.splitTokens.createTokens(str);
+Interpret.prototype.processTokens = function (str) {
+  let data = this.splitTokens.createTokens(str);
   this.tokens = data.tokens;
   this.objectTokens = data.tokenObjects;
   this.constantes = [];
@@ -43,6 +43,7 @@ Interpret.prototype.verifyConstantes = function () {
 
 Interpret.prototype.buildNameProgram = function() {
   this.containerDebuger.innerHTML = "";
+  // console.log(this.tokens);
   if (this.tokens[0] === this.keyWords.Programa) {
     const indexesProgram = this.getAllIndexes(
       this.tokens,
@@ -56,8 +57,7 @@ Interpret.prototype.buildNameProgram = function() {
         this.Debuger.Error(`${this.tokens[position]} ${name}`, "blue");
         this.verifyConstantes();
       } else {
-        this.Debuger.Error(`Semantic Error: El programa debe estar definido`);
-        this.Debuger.Error(`Fin del programa`);
+        this.Debuger.Error(`Semantic Error: En la definición del Programa`);
       }
     } else {
       this.Debuger.Error(
@@ -188,7 +188,7 @@ Interpret.prototype.buildParamDeleteFigure = function(position) {
   let id = this.tokens[position + 2];
   let finFn = this.tokens[position + 3] === ")";
   if (iniFn && id && finFn) {
-    this.Debuger.Error("Función escrita correctamente", "blue");
+    // this.Debuger.Error("Función escrita correctamente", "blue");
     console.log(this.ids);
     // debugger;
     this.ids.splice(this.ids.indexOf(id), 1);
@@ -221,22 +221,35 @@ Interpret.prototype.createConstante = function(position) {
   }
 };
 
+Interpret.prototype.validationPostiveNumber = function (number) {
+  if (number > 0) {
+    return number;
+  } else {
+    return this.Debuger.Error("Syntax Semantic: El Programa no acepta números Negativos");
+  }
+} 
+
 Interpret.prototype.createArrayConstantes = function (position) {
   for (let i = position; i < this.tokens.length; i+=2) {
     let clave = this.tokens[i + 1];
     let valor = this.tokens[i + 2];
-    if (clave === "Inicio") {
+    if (clave === "Inicio" || clave === undefined) {
       break;
     } else {
-        if (!this.arrayKeyWords.includes(clave)) {
+      if (!this.arrayKeyWords.includes(clave)) {
+        debugger;
           if (typeof clave === "string" && typeof valor === "number") {
             if (this.constantes.length === 0) {
-              this.constantes.push({ name: clave, value: valor });
+              if (this.validationPostiveNumber(valor)) {
+                this.constantes.push({ name: clave, value: valor });
+              }
             } else {
               let getNames = this.getFields(this.constantes, "name");
               // debugger;
               if (!getNames.includes(clave)) {
-                this.constantes.push({ name: clave, value: valor });
+                if (this.validationPostiveNumber(valor)) {
+                  this.constantes.push({ name: clave, value: valor });
+                }
               } else {
                 this.Debuger.Error(`SyntaxError: La constante ya esta declarada :(`);
                 break;
@@ -281,17 +294,25 @@ Interpret.prototype.buildParamsRectangle = function(position) {
 
   if (iniFn && params.length === 4 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente", "blue");
+    // this.Debuger.Error("Función escrita correctamente", "blue");
 
     params.forEach(e => {
       if (typeof e === "string") {
         let r = this.constantes.find(constante => constante.name === e);
         // debugger;
         if (r !== undefined) {
-          finalValue.push(r.value);
+          if (typeof e === "number") {
+            finalValue.push(this.validationPostiveNumber(e)); 
+          } else {
+            finalValue.push(e);
+          }
         }
       } else {
-        finalValue.push(e);
+        if (typeof e === "number") {
+          finalValue.push(this.validationPostiveNumber(e)); 
+        } else {
+          finalValue.push(e);
+        }
       }
     });
 
@@ -321,7 +342,7 @@ Interpret.prototype.buildParamsCircle = function(position) {
   // debugger;
   if (iniFn && params.length === 3 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente", "blue");
+    // this.Debuger.Error("Función escrita correctamente", "blue");
 
     params.forEach(e => {
       if (typeof e === "string") {
@@ -331,7 +352,11 @@ Interpret.prototype.buildParamsCircle = function(position) {
           finalValue.push(r.value);
         }
       } else {
-        finalValue.push(e);
+        if (typeof e === "number") {
+          finalValue.push(this.validationPostiveNumber(e)); 
+        } else {
+          finalValue.push(e);
+        }
       }
     });
     let getParams = [...finalValue, id, color];
@@ -364,7 +389,7 @@ Interpret.prototype.buildParamsTriangle = function(position) {
   // debugger;
   if (iniFn && params.length === 6 && color && id && finFn) {
     // debugger;
-    this.Debuger.Error("Función escrita correctamente", "blue");
+    // this.Debuger.Error("Función escrita correctamente", "blue");
     params.forEach(e => {
       if (typeof e === "string") {
         let r = this.constantes.find(constante => constante.name === e);
@@ -373,7 +398,11 @@ Interpret.prototype.buildParamsTriangle = function(position) {
           finalValue.push(r.value);
         }
       } else {
-        finalValue.push(e);
+        if (typeof e === "number") {
+          finalValue.push(this.validationPostiveNumber(e)); 
+        } else {
+          finalValue.push(e);
+        }
       }
     });
     let getParams = [...finalValue, id, color];
