@@ -13,6 +13,7 @@ Debuger.prototype.Error = function (message, color) {
     this.arrayMessages = obj;
     this.arrayMessages.map(msg => {
       const template = document.createElement('p');
+      const fin = document.createElement('p');
       if (color) {
         template.style.color = color;
         template.textContent = msg;
@@ -21,6 +22,9 @@ Debuger.prototype.Error = function (message, color) {
         template.style.color = "red";
         template.textContent = msg;
         this.container.appendChild(template);
+        fin.style.color = "red";
+        fin.textContent = "Fin del programa.....";
+        this.container.appendChild(fin)
         throw new Error(msg);
       }
     });

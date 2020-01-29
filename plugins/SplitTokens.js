@@ -39,7 +39,9 @@ SplitTokens.prototype.verifyNumber = function (token) {
       if (this.verifyString(token)) {
         return token
       } else {
-        return this.Debuger.Error("Todos los identificadores deben comenzar con una letra y solo deben contener Letras y números");
+        return this.Debuger.Error(
+          "Syntax Error: Todos los identificadores deben comenzar con una letra y solo deben contener Letras y números"
+        );
       }
     } else {
       return token
